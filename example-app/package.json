@@ -1,0 +1,23 @@
+{
+  "name": "example-app",
+  "version": "1.0.0",
+  "description": "Example App for SwbPlugin",
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@capacitor/android": "^3.0.0",
+    "@capacitor/core": "^3.0.0",
+    "@capacitor/ios": "^3.0.0",
+    "swbplugin": "file:.."
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^3.0.0",
+    "vite": "^2.9.18"
+  },
+  "author": "",
+  "license": "MIT"
+}

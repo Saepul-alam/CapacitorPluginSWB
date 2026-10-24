@@ -1,0 +1,6 @@
+[
+	{
+		"pkg": "swbplugin",
+		"classpath": "com.wahana.swbplugin.SwbPlugin"
+	}
+]

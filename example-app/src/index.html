@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="id" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SwbPlugin Demo App</title>
+    <meta
+      name="viewport"
+      content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <style>
+      :root {
+        --primary: #0066cc;
+        --danger: #dc3545;
+        --success: #28a745;
+        --warning: #ffc107;
+        --dark: #212529;
+        --light: #f8f9fa;
+        --border: #dee2e6;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: #f4f6f8;
+        color: #333;
+        padding: 16px;
+        padding-top: calc(env(safe-area-inset-top) + 16px);
+        padding-bottom: calc(env(safe-area-inset-bottom) + 16px);
+      }
+      header {
+        background: var(--primary);
+        color: white;
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        text-align: center;
+      }
+      header h1 { font-size: 1.3rem; margin-bottom: 4px; }
+      header p { font-size: 0.85rem; opacity: 0.9; }
+      .card {
+        background: white;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 16px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      }
+      .card h2 {
+        font-size: 1rem;
+        margin-bottom: 12px;
+        color: var(--dark);
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 6px;
+      }
+      .btn-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      button {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 10px 12px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: opacity 0.2s;
+      }
+      button:active { opacity: 0.8; }
+      button.btn-danger { background: var(--danger); }
+      button.btn-success { background: var(--success); }
+      button.btn-warning { background: #d97706; }
+      button.btn-secondary { background: #6c757d; }
+      .status-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: bold;
+      }
+      .status-ok { background: #d4edda; color: #155724; }
+      .status-warn { background: #fff3cd; color: #856404; }
+      .status-bad { background: #f8d7da; color: #721c24; }
+      pre {
+        background: #272822;
+        color: #f8f8f2;
+        padding: 10px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        max-height: 180px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+      .media-preview {
+        max-width: 100%;
+        max-height: 220px;
+        margin-top: 10px;
+        border-radius: 6px;
+        display: none;
+        object-fit: contain;
+        background: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>SwbPlugin Demo</h1>
+      <p>Anti-Fake GPS, Background Location & Media</p>
+    </header>
+
+    <div class="card">
+      <h2>Location & Gating</h2>
+      <div class="btn-grid">
+        <button id="btn-status">Check Status</button>
+        <button id="btn-enforce" class="btn-warning">Enforce Gating</button>
+        <button id="btn-current">Get Current Pos</button>
+        <button id="btn-watch" class="btn-secondary">Watch Position</button>
+      </div>
+      <div id="status-display" style="margin-top: 8px;">
+        <span class="status-badge status-warn">Status: Unknown</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Background Location & Upload</h2>
+      <div class="btn-grid">
+        <button id="btn-start-bg" class="btn-success">Start Background</button>
+        <button id="btn-stop-bg" class="btn-danger">Stop Background</button>
+        <button id="btn-history">Get History</button>
+        <button id="btn-clear-history" class="btn-secondary">Clear History</button>
+      </div>
+      <div id="bg-status-display" style="margin-top: 8px;">
+        <span class="status-badge status-warn">BG Service: Unknown</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Native Media (File / Camera)</h2>
+      <div class="btn-grid">
+        <button id="btn-pick-img">Pick Image (SAF/Doc)</button>
+        <button id="btn-take-photo">Take Photo (Camera)</button>
+        <button id="btn-take-video" class="btn-secondary" style="grid-column: span 2;">Take Video (Camera)</button>
+      </div>
+      <img id="img-preview" class="media-preview" alt="Preview Image" />
+      <video id="video-preview" class="media-preview" controls></video>
+    </div>
+
+    <div class="card">
+      <h2>Log Console</h2>
+      <pre id="log-output">// Activity logs will appear here...</pre>
+      <button id="btn-clear-log" class="btn-secondary" style="margin-top: 8px; width: 100%;">Clear Log</button>
+    </div>
+
+    <script type="module" src="./js/main.js"></script>
+  </body>
+</html>

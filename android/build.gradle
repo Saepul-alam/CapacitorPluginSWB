@@ -1,58 +1,115 @@
+def safeExtGet(String prop, Object fallback) {
+    return (rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback)
+}
+
 ext {
-    junitVersion = project.hasProperty('junitVersion') ? rootProject.ext.junitVersion : '4.13.1'
-    androidxAppCompatVersion = project.hasProperty('androidxAppCompatVersion') ? rootProject.ext.androidxAppCompatVersion : '1.2.0'
-    androidxJunitVersion = project.hasProperty('androidxJunitVersion') ? rootProject.ext.androidxJunitVersion : '1.1.2'
-    androidxEspressoCoreVersion = project.hasProperty('androidxEspressoCoreVersion') ? rootProject.ext.androidxEspressoCoreVersion : '3.3.0'
+    minSdkVersion = safeExtGet('minSdkVersion', 22)
+    compileSdkVersion = safeExtGet('compileSdkVersion', 30)
+    targetSdkVersion = safeExtGet('targetSdkVersion', 30)
+    junitVersion = safeExtGet('junitVersion', '4.13.2')
+    androidxAppCompatVersion = safeExtGet('androidxAppCompatVersion', '1.3.1')
+    androidxJunitVersion = safeExtGet('androidxJunitVersion', '1.1.3')
+    androidxEspressoCoreVersion = safeExtGet('androidxEspressoCoreVersion', '3.4.0')
+    androidxCoreVersion = safeExtGet('androidxCoreVersion', '1.6.0')
+    playServicesLocationVersion = safeExtGet('playServicesLocationVersion', '18.0.0')
+    kotlinVersion = safeExtGet('kotlinVersion', '1.8.22')
+    cordovaAndroidVersion = safeExtGet('cordovaAndroidVersion', '10.1.1')
 }
 
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.1'
+        if (project == rootProject) {
+            classpath 'com.android.tools.build:gradle:7.4.2'
+            classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.22'
+        }
+    }
+}
+
+if (project == rootProject) {
+    allprojects {
+        repositories {
+            google()
+            mavenCentral()
+        }
+    }
+    subprojects {
+        afterEvaluate { p ->
+            if (p.plugins.hasPlugin('com.android.library') || p.plugins.hasPlugin('com.android.application')) {
+                p.android {
+                    lintOptions {
+                        abortOnError false
+                        checkReleaseBuilds false
+                    }
+                }
+            }
+        }
     }
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion project.hasProperty('compileSdkVersion') ? rootProject.ext.compileSdkVersion : 30
+    if (project.android.hasProperty("namespace")) {
+        namespace 'com.wahana.swbplugin'
+    }
+    if (project.android.hasProperty("testNamespace")) {
+        testNamespace 'com.wahana.swbplugin.test'
+    }
+
+    compileSdkVersion safeExtGet('compileSdkVersion', 30)
+
     defaultConfig {
-        minSdkVersion project.hasProperty('minSdkVersion') ? rootProject.ext.minSdkVersion : 21
-        targetSdkVersion project.hasProperty('targetSdkVersion') ? rootProject.ext.targetSdkVersion : 30
+        minSdkVersion safeExtGet('minSdkVersion', 22)
+        targetSdkVersion safeExtGet('targetSdkVersion', 30)
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     lintOptions {
         abortOnError false
     }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 }
 
 repositories {
     google()
     mavenCentral()
-    jcenter()
 }
-
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':capacitor-android')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    implementation "com.google.android.gms:play-services-location:$playServicesLocationVersion"
     implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+    implementation "androidx.core:core:$androidxCoreVersion"
     testImplementation "junit:junit:$junitVersion"
+    testImplementation 'org.json:json:20231013'
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
 }
